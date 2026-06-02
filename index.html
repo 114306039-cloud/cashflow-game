@@ -6,8 +6,6 @@
     <title>會計魔法戰：現金流三大活動防禦戰</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- React and ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -69,7 +67,47 @@
     <div id="root" class="flex-grow"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect } = React;
+
+        // Custom Inline SVGs to avoid Lucide DOM conflicts and React crashes
+        const Icons = {
+            Sparkles: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+            ),
+            Flame: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            ),
+            Shield: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6z"/></svg>
+            ),
+            HelpCircle: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            ),
+            CheckCircle: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-emerald-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            ),
+            AlertTriangle: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-rose-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            ),
+            ArrowRight: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            ),
+            ShieldCheck: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12"><path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6z"/><path d="m9 12 2 2 4-4"/></svg>
+            ),
+            Sword: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/></svg>
+            ),
+            Trophy: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/><path d="M12 2a6 6 0 0 1 6 6v3.5c0 1.62-1.38 3-3 3H9c-1.62 0-3-1.38-3-3V8a6 6 0 0 1 6-6z"/></svg>
+            ),
+            BookOpen: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            ),
+            RotateCcw: () => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+            )
+        };
 
         // Level Question Database
         const QUESTIONS = [
@@ -196,19 +234,13 @@
             const [activeQuestion, setActiveQuestion] = useState(null);
 
             // Animations and feedback
-            const [animationState, setAnimationState] = useState(''); // 'shake', 'flash-red', 'projectile-ocf', etc.
+            const [animationState, setAnimationState] = useState(''); // 'shake-and-flash', 'projectile-ocf', etc.
             const [answerFeedback, setAnswerFeedback] = useState(null); // { isCorrect: true, explain: "" }
             const [wrongAnswers, setWrongAnswers] = useState([]); // Track wrong ones for AI feedback
 
             // AI Help Advisor
             const [aiExplanation, setAiExplanation] = useState('');
             const [isAiLoading, setIsAiLoading] = useState(false);
-
-            useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
-            }, [gameState, currentLevel, activeQuestion, answerFeedback, animationState, aiExplanation]);
 
             // Set up level enemies and questions
             const initLevel = (lvl) => {
@@ -252,7 +284,8 @@
                 if (isCorrect) {
                     // Correct! Launch magic attack
                     setScore(prev => prev + 100);
-                    const damage = Math.round(enemyMaxHp / 3); // 3 questions per level will defeat enemy
+                    // Use Math.ceil to make sure 3 correct answers reduce HP perfectly to 0
+                    const damage = Math.ceil(enemyMaxHp / 3); 
                     setEnemyHp(prev => Math.max(0, prev - damage));
                     
                     // Trigger attack animation based on answer type
@@ -268,7 +301,7 @@
 
                     setTimeout(() => {
                         setAnimationState('');
-                    }, 6500);
+                    }, 1000);
 
                 } else {
                     // Incorrect! Monster counter-attacks
@@ -296,7 +329,7 @@
             };
 
             const handleNext = () => {
-                // Check if player or enemy is dead
+                // If player is dead, Game Over
                 if (playerHp <= 0) {
                     setGameState('game_over');
                     return;
@@ -305,18 +338,25 @@
                 const levelQuestions = QUESTIONS.filter(q => q.level === currentLevel);
                 const nextIdx = questionIndex + 1;
 
-                if (enemyHp <= 0 || nextIdx >= levelQuestions.length) {
-                    // Level complete!
+                // Check if the enemy is fully defeated (HP = 0)
+                if (enemyHp <= 0) {
                     if (currentLevel < 3) {
                         setGameState('level_clear');
                     } else {
-                        setGameState('game_over'); // Beat the game
+                        setGameState('game_over'); // Won the whole game
                     }
                 } else {
-                    // Next question
-                    setQuestionIndex(nextIdx);
-                    setActiveQuestion(levelQuestions[nextIdx]);
-                    setAnswerFeedback(null);
+                    // If we have run out of questions for this level but the enemy is STILL alive
+                    // (Meaning the player made mistakes and did not deal enough damage)
+                    if (nextIdx >= levelQuestions.length) {
+                        // Player fails to clear the level because monster did not die
+                        setGameState('game_over');
+                    } else {
+                        // Move to the next question in the current level
+                        setQuestionIndex(nextIdx);
+                        setActiveQuestion(levelQuestions[nextIdx]);
+                        setAnswerFeedback(null);
+                    }
                 }
             };
 
@@ -365,35 +405,35 @@
             };
 
             return (
-                <div class="max-w-6xl mx-auto px-4 py-8">
+                <div className="max-w-6xl mx-auto px-4 py-8">
                     {/* Top Status Header */}
-                    <header class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-800 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg shadow-indigo-950/40">
-                                <i data-lucide="sparkles" class="w-8 h-8"></i>
+                    <header className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-800 pb-4">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg shadow-indigo-950/40">
+                                <Icons.Sparkles />
                             </div>
                             <div>
-                                <h1 class="text-3xl font-extrabold text-white tracking-wide">
-                                    會計魔法戰 <span class="text-xs bg-indigo-700 text-indigo-100 py-1 px-3 rounded-full uppercase tracking-widest font-bold">現金流防禦戰</span>
+                                <h1 className="text-3xl font-extrabold text-white tracking-wide">
+                                    會計魔法戰 <span className="text-xs bg-indigo-700 text-indigo-100 py-1 px-3 rounded-full uppercase tracking-widest font-bold">現金流防禦戰</span>
                                 </h1>
-                                <p class="text-sm text-gray-400">大專會計創意專案：精通營運 (OCF)、投資 (ICF) 與籌資 (FCF) 三大活動分類</p>
+                                <p className="text-sm text-gray-400">大專會計創意專案：精通營運 (OCF)、投資 (ICF) 與籌資 (FCF) 三大活動分類</p>
                             </div>
                         </div>
-                        <div class="mt-4 md:mt-0 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm flex items-center gap-2">
-                            <span class="text-gray-400">第七組：</span>
-                            <span class="font-bold text-indigo-400">陳柔錚、張展睿、王耀陞、郝浚丞、鄭明恩</span>
+                        <div className="mt-4 md:mt-0 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+                            <span className="text-gray-400">專案小組：</span>
+                            <span className="font-bold text-indigo-400">第七組：陳柔錚、張展睿、王耀陞、郝浚丞、鄭明恩</span>
                         </div>
                     </header>
 
                     {/* START SCREEN */}
                     {gameState === 'start' && (
-                        <div class="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12 shadow-2xl">
-                            <div class="w-20 h-20 bg-indigo-600/10 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-indigo-500/20">
-                                <i data-lucide="flame" class="w-10 h-10"></i>
+                        <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12 shadow-2xl">
+                            <div className="w-20 h-20 bg-indigo-600/10 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-indigo-500/20">
+                                <Icons.Flame />
                             </div>
-                            <h2 class="text-2xl font-bold mb-3 text-white">召喚：會計魔法師！</h2>
-                            <p class="text-sm text-gray-300 leading-relaxed mb-6 text-left">
-                                「高碳排赤字怪獸」正在侵蝕我們的校園手搖飲店財務。唯一的防禦武器，就是將突發的會計交易正確歸類到現金流量表的三大核心活動：
+                            <h2 className="text-2xl font-bold mb-3 text-white">召喚：會計魔法師！</h2>
+                            <p className="text-sm text-gray-300 leading-relaxed mb-6 text-left">
+                                「高碳排赤字怪獸」正在侵蝕我們的校園手搖飲店財務。唯一的防禦武器，就是將突發的會計交易正確歸類到現金流量表深度三大核心活動：
                                 <br /><br />
                                 🔵 <strong>營運活動 (OCF)</strong>：所有跟日常賺錢與開銷相關的收支。
                                 <br />
@@ -401,13 +441,13 @@
                                 <br />
                                 🟡 <strong>籌資活動 (FCF)</strong>：跟銀行借還錢或給股東發放股利。
                                 <br /><br />
-                                答對即可發射強力會計導彈擊退怪獸，答錯則會遭受重大財務反噬！你有信心能完全擊退三大關卡的惡魔嗎？
+                                答對即可發射強力會計導彈擊退怪獸，答錯則會遭受重大財務反噬！你有信心能完全擊退三大關卡的惡麻嗎？
                             </p>
                             <button
                                 onClick={startGame}
-                                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-4 px-6 rounded-xl transition duration-150 text-lg flex items-center justify-center gap-2"
+                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-4 px-6 rounded-xl transition duration-150 text-lg flex items-center justify-center gap-2"
                             >
-                                <i data-lucide="shield" class="w-5 h-5"></i>
+                                <Icons.Shield />
                                 進入魔法試煉
                             </button>
                         </div>
@@ -415,108 +455,107 @@
 
                     {/* BATTLEGROUND AREA */}
                     {gameState === 'playing' && activeQuestion && (
-                        <div class="space-y-6">
+                        <div className="space-y-6">
                             
-                            {/* Battle Animation Canvas / Graphic Section */}
-                            <div class={`bg-slate-950 border border-slate-800 rounded-2xl p-6 relative h-64 overflow-hidden transition-all duration-300 ${
+                            {/* Battle Animation Canvas */}
+                            <div className={`bg-slate-950 border border-slate-800 rounded-2xl p-6 relative h-64 overflow-hidden transition-all duration-300 ${
                                 animationState === 'shake-and-flash' ? 'animate-flash-red animate-shake border-red-500/50' : ''
                             }`}>
-                                {/* Stage Background / Gradients */}
-                                <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/20 to-transparent pointer-events-none"></div>
+                                <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/20 to-transparent pointer-events-none"></div>
                                 
-                                <div class="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-950/40 px-3 py-1.5 rounded-full border border-indigo-900">
+                                <div className="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-950/40 px-3 py-1.5 rounded-full border border-indigo-900">
                                     第 {currentLevel} 關關卡：{enemyName}
                                 </div>
 
-                                <div class="absolute top-4 right-4 text-sm font-bold text-yellow-400">
+                                <div className="absolute top-4 right-4 text-sm font-bold text-yellow-400">
                                     得分：{score} pts
                                 </div>
 
                                 {/* Active Combatants Row */}
-                                <div class="flex justify-between items-center h-full max-w-4xl mx-auto px-4">
+                                <div className="flex justify-between items-center h-full max-w-4xl mx-auto px-4">
                                     
                                     {/* Player (Wizard) */}
-                                    <div class="flex flex-col items-center relative animate-bounce-slow">
-                                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl shadow-xl shadow-indigo-950/50 border border-indigo-400">
+                                    <div className="flex flex-col items-center relative animate-bounce-slow">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl shadow-xl shadow-indigo-950/50 border border-indigo-400">
                                             🧙‍♂️
                                         </div>
-                                        <span class="text-xs font-bold mt-2 text-indigo-300">魔法會計師</span>
+                                        <span className="text-xs font-bold mt-2 text-indigo-300">魔法會計師</span>
                                         
                                         {/* HP Bar */}
-                                        <div class="w-24 bg-slate-800 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-700">
-                                            <div class="bg-emerald-500 h-full transition-all duration-300" style={{ width: `${playerHp}%` }}></div>
+                                        <div className="w-24 bg-slate-800 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-700">
+                                            <div className="bg-emerald-500 h-full transition-all duration-300" style={{ width: `${playerHp}%` }}></div>
                                         </div>
-                                        <span class="text-[10px] text-gray-500 mt-1">生命值：{playerHp}/100</span>
+                                        <span className="text-[10px] text-gray-500 mt-1">生命值：{playerHp}/100</span>
 
                                         {/* Magic missile dynamic projectiles */}
                                         {animationState === 'projectile-ocf' && (
-                                            <div class="absolute w-6 h-6 bg-blue-500 rounded-full blur-[2px] projectile-ocf-active flex items-center justify-center text-xs font-extrabold text-white">
+                                            <div className="absolute w-12 h-6 bg-blue-500 rounded-full blur-[2px] projectile-ocf-active flex items-center justify-center text-xs font-extrabold text-white">
                                                 OCF
                                             </div>
                                         )}
                                         {animationState === 'projectile-icf' && (
-                                            <div class="absolute w-6 h-6 bg-emerald-500 rounded-full blur-[2px] projectile-icf-active flex items-center justify-center text-xs font-extrabold text-white">
+                                            <div className="absolute w-12 h-6 bg-emerald-500 rounded-full blur-[2px] projectile-icf-active flex items-center justify-center text-xs font-extrabold text-white">
                                                 ICF
                                             </div>
                                         )}
                                         {animationState === 'projectile-fcf' && (
-                                            <div class="absolute w-6 h-6 bg-amber-500 rounded-full blur-[2px] projectile-fcf-active flex items-center justify-center text-xs font-extrabold text-white">
+                                            <div className="absolute w-12 h-6 bg-amber-500 rounded-full blur-[2px] projectile-fcf-active flex items-center justify-center text-xs font-extrabold text-white">
                                                 FCF
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* CLASH IMPACT ZONE (Visual middle) */}
-                                    <div class="flex items-center justify-center">
+                                    {/* CLASH IMPACT ZONE */}
+                                    <div className="flex items-center justify-center">
                                         {animationState === 'shake-and-flash' && (
-                                            <span class="text-3xl animate-pulse">💥</span>
+                                            <span className="text-3xl animate-pulse">💥</span>
                                         )}
                                     </div>
 
                                     {/* Enemy (Monster) */}
-                                    <div class="flex flex-col items-center relative">
-                                        <div class="w-20 h-20 bg-slate-900 border-2 border-rose-500 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-rose-950/40 animate-bounce-slow">
+                                    <div className="flex flex-col items-center relative">
+                                        <div className="w-20 h-20 bg-slate-900 border-2 border-rose-500 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-rose-950/40 animate-bounce-slow">
                                             {currentLevel === 1 ? '👹' : currentLevel === 2 ? '🪨' : '🐲'}
                                         </div>
-                                        <span class="text-xs font-bold mt-2 text-rose-300">{enemyName}</span>
+                                        <span className="text-xs font-bold mt-2 text-rose-300">{enemyName}</span>
 
                                         {/* Enemy HP Bar */}
-                                        <div class="w-28 bg-slate-800 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-700">
-                                            <div class="bg-rose-500 h-full transition-all duration-300" style={{ width: `${(enemyHp / enemyMaxHp) * 100}%` }}></div>
+                                        <div className="w-28 bg-slate-800 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-700">
+                                            <div className="bg-rose-500 h-full transition-all duration-300" style={{ width: `${(enemyHp / enemyMaxHp) * 100}%` }}></div>
                                         </div>
-                                        <span class="text-[10px] text-gray-500 mt-1">生命值：{enemyHp}/{enemyMaxHp}</span>
+                                        <span className="text-[10px] text-gray-500 mt-1">生命值：{enemyHp}/{enemyMaxHp}</span>
                                     </div>
 
                                 </div>
                             </div>
 
                             {/* Question Card Display */}
-                            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                                <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-                                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
-                                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                                <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                                    <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                                        <Icons.HelpCircle />
                                         會計交易事件
                                     </span>
-                                    <span class="text-xs text-gray-500">當前關卡題量：{questionIndex + 1} / 3</span>
+                                    <span className="text-xs text-gray-500">當前關卡題量：{questionIndex + 1} / 3</span>
                                 </div>
-                                <h3 class="text-lg md:text-xl font-bold text-white leading-relaxed mb-6">
+                                <h3 className="text-lg md:text-xl font-bold text-white leading-relaxed mb-6">
                                     「{activeQuestion.text}」
                                 </h3>
 
                                 {/* Answer Selections */}
                                 {!answerFeedback ? (
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="grid className inline-grid grid-cols-1 md:grid-cols-3 gap-4">
                                         {activeQuestion.options.map((opt, i) => (
                                             <button
                                                 key={i}
                                                 onClick={() => handleAnswer(opt)}
-                                                class={`py-4 px-6 rounded-xl border font-bold text-sm text-white transition duration-150 flex flex-col items-center justify-center gap-2 ${
+                                                className={`py-4 px-6 rounded-xl border font-bold text-sm text-white transition duration-150 flex flex-col items-center justify-center gap-2 ${
                                                     opt.type === 'OCF' ? 'bg-slate-950 border-blue-900 hover:border-blue-500 hover:bg-blue-950/20' :
                                                     opt.type === 'ICF' ? 'bg-slate-950 border-emerald-900 hover:border-emerald-500 hover:bg-emerald-950/20' :
                                                     'bg-slate-950 border-amber-900 hover:border-amber-500 hover:bg-amber-950/20'
                                                 }`}
                                             >
-                                                <span class={`text-xs px-2.5 py-0.5 rounded-full ${
+                                                <span className={`text-xs px-2.5 py-0.5 rounded-full ${
                                                     opt.type === 'OCF' ? 'bg-blue-900/40 text-blue-400' :
                                                     opt.type === 'ICF' ? 'bg-emerald-900/40 text-emerald-400' :
                                                     'bg-amber-900/40 text-amber-400'
@@ -528,28 +567,28 @@
                                         ))}
                                     </div>
                                 ) : (
-                                    <div class="space-y-4">
-                                        <div class={`p-5 rounded-xl border ${
+                                    <div className="space-y-4">
+                                        <div className={`p-5 rounded-xl border ${
                                             answerFeedback.isCorrect ? 'bg-emerald-950/20 border-emerald-900 text-emerald-200' : 'bg-rose-950/20 border-rose-900 text-rose-200'
                                         }`}>
-                                            <h4 class="font-bold mb-2 text-md flex items-center gap-1.5">
+                                            <h4 className="font-bold mb-2 text-md flex items-center gap-1.5">
                                                 {answerFeedback.isCorrect ? (
-                                                    <><i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i> {answerFeedback.text}</>
+                                                    <><Icons.CheckCircle /> <span className="ml-1">{answerFeedback.text}</span></>
                                                 ) : (
-                                                    <><i data-lucide="alert-triangle" class="w-5 h-5 text-rose-400"></i> {answerFeedback.text}</>
+                                                    <><Icons.AlertTriangle /> <span className="ml-1">{answerFeedback.text}</span></>
                                                 )}
                                             </h4>
-                                            <p class="text-xs text-gray-400 leading-relaxed mt-3">
+                                            <p className="text-xs text-gray-400 leading-relaxed mt-3">
                                                 <strong>💡 會計解析：</strong> {answerFeedback.explain}
                                             </p>
                                         </div>
 
                                         <button
                                             onClick={handleNext}
-                                            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl transition duration-150 flex items-center justify-center gap-1"
+                                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl transition duration-150 flex items-center justify-center gap-1"
                                         >
                                             繼續前行 / 進入下一回合
-                                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                            <Icons.ArrowRight />
                                         </button>
                                     </div>
                                 )}
@@ -559,20 +598,20 @@
 
                     {/* LEVEL CLEAR TRANSITION SCREEN */}
                     {gameState === 'level_clear' && (
-                        <div class="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12 shadow-2xl">
-                            <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
-                                <i data-lucide="shield-check" class="w-12 h-12 animate-pulse"></i>
+                        <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12 shadow-2xl">
+                            <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
+                                <Icons.ShieldCheck />
                             </div>
-                            <h2 class="text-2xl font-bold mb-2 text-white">第 {currentLevel} 關防禦成功！</h2>
-                            <p class="text-sm text-gray-400 mb-6">
+                            <h2 className="text-2xl font-bold mb-2 text-white">第 {currentLevel} 關防禦成功！</h2>
+                            <p className="text-sm text-gray-400 mb-6">
                                 幹得好！你成功利用優異的會計分類，全數擊退了【{enemyName}】。
                                 接下來的關卡，赤字怪獸將會更加難纏，會計交易分錄也將引入更複雜的「折舊攤銷」、「應計變動項目」！
                             </p>
                             <button
                                 onClick={enterNextLevel}
-                                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-6 rounded-xl transition duration-150 flex justify-center items-center gap-2"
+                                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-6 rounded-xl transition duration-150 flex justify-center items-center gap-2"
                             >
-                                <i data-lucide="sword" class="w-5 h-5"></i>
+                                <Icons.Sword />
                                 挺進第 {currentLevel + 1} 關卡
                             </button>
                         </div>
@@ -580,53 +619,53 @@
 
                     {/* GAME OVER AND RESULT COMPILATION */}
                     {gameState === 'game_over' && (
-                        <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-                            <div class="text-center mb-8">
-                                <div class="w-20 h-20 bg-indigo-600/10 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-500/30">
-                                    <i data-lucide="trophy" class="w-12 h-12"></i>
+                        <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+                            <div className="text-center mb-8">
+                                <div className="w-20 h-20 bg-indigo-600/10 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-500/30">
+                                    <Icons.Trophy />
                                 </div>
-                                <h2 class="text-3xl font-extrabold text-white">會計魔法試煉總結</h2>
-                                <p class="text-gray-400 mt-1">
-                                    {playerHp > 0 ? '🏆 恭喜！您已成功擊退所有赤字巨獸，榮登「永續金流大師」寶座！' : '💀 挑戰失敗！因過多分類錯誤，店鋪爆發流動性破產危機！'}
+                                <h2 className="text-3xl font-extrabold text-white">會計魔法試煉總結</h2>
+                                <p className="text-gray-400 mt-1">
+                                    {playerHp > 0 && enemyHp <= 0 ? '🏆 恭喜！您已成功擊退所有赤字巨獸，榮登「永續金流大師」寶座！' : '💀 挑戰失敗！未能成功擊潰怪獸，店鋪面臨流動性危機！'}
                                 </p>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center">
-                                    <span class="text-xs text-gray-500 uppercase font-bold block">最終魔法積分</span>
-                                    <span class="text-4xl font-extrabold text-indigo-400 mt-2 inline-block">{score} pts</span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center">
+                                    <span className="text-xs text-gray-500 uppercase font-bold block">最終魔法積分</span>
+                                    <span className="text-4xl font-extrabold text-indigo-400 mt-2 inline-block">{score} pts</span>
                                 </div>
-                                <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center">
-                                    <span class="text-xs text-gray-500 uppercase font-bold block">錯題失誤數</span>
-                                    <span class="text-4xl font-extrabold text-rose-400 mt-2 inline-block">{wrongAnswers.length} 題</span>
+                                <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center">
+                                    <span className="text-xs text-gray-500 uppercase font-bold block">錯題失誤數</span>
+                                    <span className="text-4xl font-extrabold text-rose-400 mt-2 inline-block">{wrongAnswers.length} 題</span>
                                 </div>
                             </div>
 
                             {/* AI Magic Accounting Tutor Room */}
-                            <div class="bg-gradient-to-r from-indigo-950/50 to-slate-950 border border-indigo-900 rounded-2xl p-6 shadow-xl mb-6">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-md font-bold text-indigo-300 flex items-center gap-2">
-                                        <i data-lucide="sparkles" class="w-5 h-5 text-indigo-400"></i>
-                                        Gemini AI 魔法導師 - 分類奧義特訓診斷
+                            <div className="bg-gradient-to-r from-indigo-950/50 to-slate-950 border border-indigo-900 rounded-2xl p-6 shadow-xl mb-6">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-md font-bold text-indigo-300 flex items-center gap-2">
+                                        <Icons.Sparkles />
+                                        <span className="ml-1">Gemini AI 魔法導師 - 分類奧義特訓診斷</span>
                                     </h3>
                                     <button
                                         onClick={askAiTutor}
                                         disabled={isAiLoading}
-                                        class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg flex items-center gap-1.5 transition duration-150"
+                                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg flex items-center gap-1.5 transition duration-150"
                                     >
                                         {isAiLoading ? (
-                                            <span class="animate-spin inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full mr-1"></span>
+                                            <span className="animate-spin inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full mr-1"></span>
                                         ) : (
-                                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                                            <Icons.BookOpen />
                                         )}
-                                        大師觀念診斷
+                                        <span className="ml-1">大師觀念診斷</span>
                                     </button>
                                 </div>
-                                <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 text-sm min-h-[100px]">
+                                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 text-sm min-h-[100px]">
                                     {aiExplanation ? (
-                                        <p class="text-indigo-100 leading-relaxed font-mono whitespace-pre-line">{aiExplanation}</p>
+                                        <p className="text-indigo-100 leading-relaxed font-mono whitespace-pre-line">{aiExplanation}</p>
                                     ) : (
-                                        <p class="text-gray-500 italic text-center py-4">
+                                        <p className="text-gray-500 italic text-center py-4">
                                             {wrongAnswers.length > 0 
                                                 ? "「點擊上方大師診斷，AI 導師將精確讀取您在遊戲中答錯的題目，為您量身打造觀念解鎖對策！」"
                                                 : "「您太棒了！無失誤通關，點擊上方可獲取大師對您的永續經營祝福語與高級會計展望！」"}
@@ -637,10 +676,10 @@
 
                             <button
                                 onClick={startGame}
-                                class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl transition duration-150 flex justify-center items-center gap-2"
+                                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl transition duration-150 flex justify-center items-center gap-2"
                             >
-                                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
-                                重啟修煉 (再次挑戰)
+                                <Icons.RotateCcw />
+                                <span className="ml-1">重啟修煉 (再次挑戰)</span>
                             </button>
                         </div>
                     )}
@@ -654,4 +693,4 @@
         root.render(<App />);
     </script>
 </body>
-</html>
+</html>               
