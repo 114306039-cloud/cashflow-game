@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>會計魔法戰：現金流三大活動防禦戰</title>
+    <title>會計魔法戰：現金流三大活動三階巨獸連續挑戰賽</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React and ReactDOM -->
@@ -69,7 +69,6 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // Custom Inline SVGs to avoid Lucide DOM conflicts and React crashes
         const Icons = {
             Sparkles: () => (
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
@@ -92,12 +91,6 @@
             ArrowRight: () => (
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             ),
-            ShieldCheck: () => (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12"><path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6z"/><path d="m9 12 2 2 4-4"/></svg>
-            ),
-            Sword: () => (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/></svg>
-            ),
             Trophy: () => (
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/><path d="M12 2a6 6 0 0 1 6 6v3.5c0 1.62-1.38 3-3 3H9c-1.62 0-3-1.38-3-3V8a6 6 0 0 1 6-6z"/></svg>
             ),
@@ -109,206 +102,194 @@
             )
         };
 
-        // Level Question Database
-        const QUESTIONS = [
-            // LEVEL 1: Basics
-            {
-                id: 1,
-                level: 1,
-                text: "顧客來店點餐，支付現金 $150 購買招牌珍珠鮮奶茶。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: true },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: false },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "這是手搖飲店主要的營業活動。銷售商品取得現金流入屬於營運活動 (OCF)。"
-            },
-            {
-                id: 2,
-                level: 1,
-                text: "店鋪花費現金 $120,000 購置一台全新的「全自動封口包裝機」。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: false },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: true },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "購買供營業使用之非流動資產（機器設備、不動產等）屬於投資活動 (ICF)。"
-            },
-            {
-                id: 3,
-                level: 1,
-                text: "因為初期營運資金不足，向合作金庫銀行申請長期擔保借款 $500,000。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: false },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: false },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }
-                ],
-                explain: "向銀行借入長期款項，屬於與債權人交易，屬於籌資活動 (FCF) 的現金流入。"
-            },
-            
-            // LEVEL 2: Moderate (Accrual & Working Capital changes)
-            {
-                id: 4,
-                level: 2,
-                text: "支付本月份員工薪水、店面租金與固定水電費共 $45,000。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: true },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: false },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "支付員工薪資、房租等屬於日常營運費用，屬於營運活動 (OCF) 的現金流出。"
-            },
-            {
-                id: 5,
-                level: 2,
-                text: "收回上個月大專迎新活動中，資產負債表上所記錄的「應收帳款」現金 $35,000。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: true },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: false },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "應收帳款的收回雖然不影響損益表，但它是日常銷售產生的營運資金變動，屬於營運活動 (OCF)。"
-            },
-            {
-                id: 6,
-                level: 2,
-                text: "決定將舊有的中古外送機車處分淘汰，取得出售現金 $18,000。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: false },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: true },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "出售非流動資產（機器、設備、土地、車輛等）取得的現金流入，屬於投資活動 (ICF)。"
-            },
-
-            // LEVEL 3: Advanced Challenge (Interests, Dividends, Adjustments)
-            {
-                id: 7,
-                level: 3,
-                text: "年度結束時，依照股東大會決議，發放現金股利 $80,000 給店鋪股東。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: false },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: false },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }
-                ],
-                explain: "支付股利屬於回饋給出資股東，屬於籌資活動 (FCF) 的現金流出。（台灣常規做法與IFRS分類）"
-            },
-            {
-                id: 8,
-                level: 3,
-                text: "償付銀行長期貸款的利息支出 $5,000。 (採用IFRS常規分類)",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: true },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: false },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "在IFRS架構下，支付利息可分類為營運活動（以反映本期損益影響）或籌資活動。台灣企業實務一般將支付利息歸類為「營運活動 (OCF)」。"
-            },
-            {
-                id: 9,
-                level: 3,
-                text: "將閒置資金購入台積電公司股票作為長期投資，支付交割現金 $200,000。",
-                options: [
-                    { label: "營運活動 (OCF)", type: "OCF", isCorrect: false },
-                    { label: "投資活動 (ICF)", type: "ICF", isCorrect: true },
-                    { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }
-                ],
-                explain: "購買其他企業之股票、債券等金融資產作為長期投資目的，屬於投資活動 (ICF) 的現金流出。"
-            }
+        // 中二病爆表・超長名字三大魔王庫
+        const BOSS_STAGES = [
+            { id: 0, name: "【第一階段：漆黑之獄・終末螺旋・幽冥虛空噬魂災厄兵】", maxHp: 100, avatar: "👻", desc: "自深淵底層甦醒，全身纏繞著絕望黑炎的最底層災厄魔物。" },
+            { id: 1, name: "【第二階段：崩裂九重天・超重力崩壞・破滅極星黃金泰坦神巨石】", maxHp: 120, avatar: "🪨", desc: "引導群星隕落之力、由億萬年破滅極光重力凝聚而成的黃金神巨石。" },
+            { id: 2, name: "【第三階段：神羅天征・永劫不滅・次元斷裂・至高神耀淨世創生魔龍皇】", maxHp: 150, avatar: "🐲", desc: "掌控次元裂縫與宇宙創生奧秘、能一指抹消銀河系的至高終焉主宰魔龍皇。" }
         ];
 
-        function App() {
-            // --- GAME STATES ---
-            const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'level_clear', 'game_over'
-            const [currentLevel, setCurrentLevel] = useState(1);
-            const [score, setScore] = useState(0);
-            
-            // Battle Stats
-            const [playerHp, setPlayerHp] = useState(100);
-            const [enemyHp, setEnemyHp] = useState(100);
-            const [enemyMaxHp, setEnemyMaxHp] = useState(100);
-            const [enemyName, setEnemyName] = useState('高碳排赤字小魔兵');
+        // 龐大會計 56 題題庫
+        const MASTER_QUESTIONS = [
+            // OCF 系列 (日常營運相關)
+            { text: "顧客來店點餐，支付現金 $150 購買招牌珍珠鮮奶茶。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "銷售商品或提供勞務取得現金流入，屬於營運活動 (OCF)。" },
+            { text: "支付本月份店鋪員工薪水與外送績效獎金共 $35,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "支付員工薪資屬於日常營運費用開支，歸類為營運活動 (OCF)。" },
+            { text: "收回上個月大專聯合迎新活動中，客戶欠付的「應收帳款」現金 $20,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "應收帳款的收回雖然不影響損益，但屬於營業活動產生的營運資金變動 (OCF)。" },
+            { text: "償付銀行長期貸款的本期應付利息支出 $4,500。 (台灣企業常規分類)", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "在IFRS架構下台灣常規做法，支付利息多分類於營運活動 (OCF) 以反映本期損益。" },
+            { text: "向茶葉大亨供應商以現金採購下半年度原料茶葉及珍珠 $15,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購買營業存貨（原料、材料）屬於營運活動的現金流出 (OCF)。" },
+            { text: "收到投資其他公司股票所發放的現金股利收入 $8,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "收到利息與股利收入，依台灣常見IFRS分類歸在營運活動 (OCF)。" },
+            { text: "向國稅局申報並以現金繳納上季度的加值型營業稅與營所稅 $12,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "繳納所得稅與營業稅等相關稅捐，除特殊規定外一律屬營運活動 (OCF)。" },
+            { text: "向房東預付未來半年的店面租金，共支付現金 $60,500。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "預付費用屬於營運資產（流動資產）變動，屬於營運活動 (OCF)。" },
+            { text: "給付本月店面招招牌與在地社群媒體廣告的行銷贊助費用 $8,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "推銷及廣告費用支出是為了賺取營業收入的日常支出，屬於營運活動 (OCF)。" },
+            { text: "店鋪收到辦理跨校活動訂單的預收訂金現金 $5,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "預收貨款是日常營運負債（流動負債）的增加，屬於營運活動 (OCF)。" },
+            { text: "支付辦公室行政人員日常文具用品與影印紙張費用 $1,200。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "管理費用、文具用品支出屬於營運活動流出 (OCF)。" },
+            { text: "現金支付店面本期的火災保險與營業公共安全責任險保費 $6,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "保險費支出屬於營運活動 (OCF)。" },
+            { text: "因為違反環保法規廢棄物處理規定，被環保局裁罰並繳納現金罰鍰 $3,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "營業外損失及相關罰款的現金支付，通常計入營業活動的營運流出 (OCF)。" },
+            { text: "收到銀行活期存款帳戶結算所派發的微薄利息收入 $350。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "利息收入通常分類於營運活動 (OCF)。" },
+            { text: "以現金支付過去賒購茶葉原料所產生的「應付帳款」 $11,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "償還購買存貨所引起的應付帳款，屬於營運資金變動之營運活動 (OCF)。" },
+            { text: "外送途中機車拋錨，支付維修廠機車定期保養與零件更換費 $2,500。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "日常維修保養支出未達資本化標準，屬於日常營運費用 (OCF)。" },
+            { text: "店鋪出租閒置地下室作為倉庫給他人，本月如期收到租金收入現金 $6,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "租金收入屬於損益表項目之流動，歸類為營運活動 (OCF)。" },
+            { text: "支付外送平台 (UberEats/Foodpanda) 本月份的系統抽成服務費 $14,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "平台抽成屬於營業推銷費用支出，屬於營運活動 (OCF)。" },
+            { text: "提供跨校茶會外送，對方以現金支付「應收票據」到期款項 $25,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: true }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "營業產生的應收票據兌現，屬於營業資金項目，歸類在營運活動 (OCF)。" },
 
-            // Current Active Question Index for current level
+            // ICF 系列 (長期資產、投資相關)
+            { text: "店鋪花費現金 $120,000 購置一台全新的「全自動封口包裝機」。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購買供營業使用的非流動資產（不動產、廠房及設備）屬於投資活動 (ICF)。" },
+            { text: "決定將舊有的外送中古機車處分淘汰，取得出售現金 $18,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "處分/出售非流動資產所收回的現金，屬於投資活動 (ICF) 的現金流入。" },
+            { text: "將店內閒置的多餘資金購入台積電公司股票作為長期股權投資，支付現金 $200,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購買其他企業之權益或債券證券作為投資用途，屬於投資活動 (ICF)。" },
+            { text: "出售半年前買入的政府公債投資，取得回收本金現金 $50,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "收回對其他單位的債券投資本金，屬於投資活動 (ICF) 的現金流入。" },
+            { text: "為了開連鎖分店，簽約買下一塊土地，支付簽約金現金 $1,000,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購置土地、房屋等不動產，屬於投資活動 (ICF) 的資本支出。" },
+            { text: "購入一項為期三年的專利調茶配方技術，以現金支付特許權利金 $60,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購置無形資產（專利權、商標權、電腦軟體）屬於投資活動 (ICF)。" },
+            { text: "將一筆閒置現金存入國泰世華銀行作為「一年期定期存款」以賺取利息。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "將現金轉為長期定存或受限制資產，視為投資活動 (ICF) 的支出。" },
+            { text: "撥出部分現金，向關係企業發放一筆長期資金融通貸款 $150,000 給對方。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "貸出款項給他人（創立應收長期貸項），屬於投資活動 (ICF) 的流出。" },
+            { text: "收回先前借給隔壁烘焙坊店主的短期資金融通借款本金 $30,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "收回貸款給他人的本金，屬於投資活動 (ICF) 的現金流入。" },
+            { text: "店鋪裝修全面升級，擴建廚房並改善通風設備，支付現金工程款 $85,500。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "對既有設備或廠房的資本化重大改良支出，屬於投資活動 (ICF)。" },
+            { text: "出售持有的非流動無形資產「商標權」給外部連鎖集團，取得現金 $200,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "處分/出售無形資產取得的現金，屬於投資活動 (ICF)。" },
+            { text: "添購全新的高階店用POS結帳系統機台及螢幕硬體，支付現金 $22,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購置營運使用的生財器具及硬體設備，屬於投資活動 (ICF)。" },
+            { text: "出售多年前買進的閒置店面預備用地，獲得處分現金流入 $3,500,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "處分非營業土地（投資性不動產或固定資產），屬於投資活動 (ICF)。" },
+            { text: "購入黃金避險資產，在臺灣銀行櫃檯支付現金 $40,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購入具備投資性質之商品或金融工具，屬於投資活動 (ICF)。" },
+            { text: "淘汰店內舊製冰機，將其作為廢鐵賣給回收商，換取微薄現金 $1,500。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "報廢固定資產之殘值變現，仍屬於處分資產之投資活動 (ICF)。" },
+            { text: "向聯發科公司收回其到期之公司債投資本金 $100,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "持有至到期日之債券投資本金贖回，屬於投資活動 (ICF)。" },
+            { text: "因辦公室全面數位化，將舊影印機作價變賣取得現金 $4,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "處分辦公設備屬於投資活動 (ICF)。" },
+            { text: "購入供加盟總部開會使用的頂級進口會議長桌與辦公椅，現金支付 $32,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: true }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: false }], explain: "購置辦公家具屬於固定資產的增加，為投資活動 (ICF)。" },
+
+            // FCF 系列 (跟銀行、股東等融資相關)
+            { text: "因為初期營運資金不足，向合作金庫銀行申請長期擔保借款 $500,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "向銀行借入長期款項，屬於與債權人交易，屬於籌資活動 (FCF) 的現金流入。" },
+            { text: "年度結束時，依照股東大會決議，發放現金股利 $80,000 給店鋪股東。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "支付現金股利給出資人/股東，屬於權益變動之籌資活動 (FCF)。" },
+            { text: "店鋪為了擴大經營，現金償還先前向玉山銀行借貸的短、長期借款本金 $150,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "償還借款本金（注意：不含利息）屬於與債權人的交易流出，為籌資活動 (FCF)。" },
+            { text: "發行新股吸引外部投資人加盟，取得各股東認股匯入之現金資本 $300,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "公司現金增資、股東投入資本，屬於權益方交易之籌資活動 (FCF)。" },
+            { text: "從集中市場出資溢價買回公司之前發行的庫藏股股票，支付現金 $45,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "買回庫藏股屬於權益項目的減少，造成現金流出，屬籌資活動 (FCF)。" },
+            { text: "向租賃公司租用公務車，本月支付屬於「租賃負債本金償還」的現金 $12,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "依據新租賃準則(IFRS 16)，租賃負債本金的償還屬於籌資活動 (FCF)。" },
+            { text: "因臨時資金調度週轉，向大股東本人進行短期無息借款 $50,000，取得現金。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "向股東、關係人借款或舉借其他應付款（融資性質），屬於籌資活動 (FCF)。" },
+            { text: "發行一筆三年期公司債券，順利獲得市場超額認購，募集現金 $1,000,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "發行應付公司債募集資金，是非流動負債的增加，屬於籌資活動 (FCF)。" },
+            { text: "償還股東先前的週轉借款本金 $20,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "還款給非金融機構的融資借款，仍屬籌資活動 (FCF)。" },
+            { text: "支付公司債的到期面額本金給債券投資人 $500,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "應付公司債到期還本，屬於籌資活動 (FCF) 的現金流出。" },
+            { text: "向非關係人之地下管道或民間融資公司賒借短期借款 $30,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "舉借任何形式的短長期借款以融通資金，皆為籌資活動 (FCF)。" },
+            { text: "因獨資合夥人拆夥，由公司出資現金 $150,000 退還其合夥出資股本。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "退還股本或合夥出資，屬於權益資本的減少，屬於籌資活動 (FCF)。" },
+            { text: "因為跟銀行談妥透支契約，本月使用「銀行透支」額度而獲得現金 $10,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "銀行透支在財務流動分類中通常視為短期融資借款（籌資活動 FCF）。" },
+            { text: "清償上季度累積之銀行透支款項現金 $8,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "清償透支款項屬於籌資活動 (FCF) 的還款支出。" },
+            { text: "支付給創辦股東作為當初技術出資的特別股回購現金 $70,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "收回、股份贖回皆屬籌資活動 (FCF)。" },
+            { text: "發行可轉換公司債 (CB) 取得投資大眾認購款項 $600,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "發行複合金融工具募集資金，本質上屬籌資活動 (FCF)。" },
+            { text: "取得政府特別指名核撥之「非營運、創辦資金融通無息補貼貸款」 $100,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "雖有政府補貼成分，但借入款項本金仍屬於籌資活動 (FCF)。" },
+            { text: "合夥手搖店公開募集特別股，收到認股現金 $250,000。", options: [{ label: "營運活動 (OCF)", type: "OCF", isCorrect: false }, { label: "投資活動 (ICF)", type: "ICF", isCorrect: false }, { label: "籌資活動 (FCF)", type: "FCF", isCorrect: true }], explain: "募集特別股如同發行新股，是與權益持有人交易，屬籌資活動 (FCF)。" }
+        ];
+
+        // 隨機洗牌函式
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function App() {
+            // --- 遊戲狀態 ---
+            const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'game_over'
+            const [gameQuestions, setGameQuestions] = useState([]); // 當局隨機 10 題
             const [questionIndex, setQuestionIndex] = useState(0);
             const [activeQuestion, setActiveQuestion] = useState(null);
+            
+            // 戰鬥數據
+            const [playerHp, setPlayerHp] = useState(100);
+            const [score, setScore] = useState(0);
+            const [correctCount, setCorrectCount] = useState(0);
 
-            // Animations and feedback
-            const [animationState, setAnimationState] = useState(''); // 'shake-and-flash', 'projectile-ocf', etc.
-            const [answerFeedback, setAnswerFeedback] = useState(null); // { isCorrect: true, explain: "" }
-            const [wrongAnswers, setWrongAnswers] = useState([]); // Track wrong ones for AI feedback
+            // 多階段怪獸管理
+            const [currentMonsterIndex, setCurrentMonsterIndex] = useState(0);
+            const [currentMonsterHp, setCurrentMonsterHp] = useState(100);
+            const [defeatedMonsters, setDefeatedMonsters] = useState([]);
 
-            // AI Help Advisor
+            // 動畫及反饋
+            const [animationState, setAnimationState] = useState('');
+            const [answerFeedback, setAnswerFeedback] = useState(null);
+            const [wrongAnswers, setWrongAnswers] = useState([]);
+
+            // AI 導師
             const [aiExplanation, setAiExplanation] = useState('');
             const [isAiLoading, setIsAiLoading] = useState(false);
 
-            // Set up level enemies and questions
-            const initLevel = (lvl) => {
-                setCurrentLevel(lvl);
-                setQuestionIndex(0);
+            // 初始化新的一局（隨機抽 10 題）
+            const startNewSession = () => {
+                const shuffled = shuffleArray(MASTER_QUESTIONS);
+                const selected = shuffled.slice(0, 10);
                 
-                // Set enemy difficulty
-                if (lvl === 1) {
-                    setEnemyName('初階：高碳排赤字魔兵');
-                    setEnemyHp(100);
-                    setEnemyMaxHp(100);
-                } else if (lvl === 2) {
-                    setEnemyName('中階：非流動折舊巨石怪');
-                    setEnemyHp(120);
-                    setEnemyMaxHp(120);
-                } else {
-                    setEnemyName('終極：IFRS 利息混合大魔王');
-                    setEnemyHp(150);
-                    setEnemyMaxHp(150);
-                }
+                setGameQuestions(selected);
+                setQuestionIndex(0);
+                setActiveQuestion(selected[0]);
+                
+                setPlayerHp(100);
+                setScore(0);
+                setCorrectCount(0);
+                
+                setCurrentMonsterIndex(0);
+                setCurrentMonsterHp(BOSS_STAGES[0].maxHp);
+                setDefeatedMonsters([]);
 
-                const filtered = QUESTIONS.filter(q => q.level === lvl);
-                setActiveQuestion(filtered[0]);
+                setWrongAnswers([]);
                 setAnswerFeedback(null);
                 setAiExplanation('');
-            };
-
-            const startGame = () => {
-                setScore(0);
-                setPlayerHp(100);
-                setWrongAnswers([]);
-                initLevel(1);
                 setGameState('playing');
             };
 
+            // 核心傷害與Boss切換邏輯
+            const dealDamageToBosses = (damageAmount) => {
+                let currentHp = currentMonsterHp;
+                let monsterIdx = currentMonsterIndex;
+                let localDefeated = [...defeatedMonsters];
+
+                let remainingDamage = damageAmount;
+
+                while (remainingDamage > 0 && monsterIdx < BOSS_STAGES.length) {
+                    const activeBoss = BOSS_STAGES[monsterIdx];
+                    if (currentHp > remainingDamage) {
+                        currentHp -= remainingDamage;
+                        remainingDamage = 0;
+                    } else {
+                        // 擊敗當前 Boss
+                        remainingDamage -= currentHp;
+                        localDefeated.push(activeBoss.name);
+                        
+                        monsterIdx += 1;
+                        if (monsterIdx < BOSS_STAGES.length) {
+                            currentHp = BOSS_STAGES[monsterIdx].maxHp;
+                        } else {
+                            currentHp = 0; // 全部擊殺！
+                        }
+                    }
+                }
+
+                setCurrentMonsterHp(currentHp);
+                setCurrentMonsterIndex(monsterIdx);
+                setDefeatedMonsters(localDefeated);
+            };
+
             const handleAnswer = (option) => {
-                if (answerFeedback) return; // Prevent double submission before next
+                if (answerFeedback) return;
 
                 const isCorrect = option.isCorrect;
                 
                 if (isCorrect) {
-                    // Correct! Launch magic attack
                     setScore(prev => prev + 100);
-                    // Use Math.ceil to make sure 3 correct answers reduce HP perfectly to 0
-                    const damage = Math.ceil(enemyMaxHp / 3); 
-                    setEnemyHp(prev => Math.max(0, prev - damage));
+                    setCorrectCount(prev => prev + 1);
                     
-                    // Trigger attack animation based on answer type
+                    // 答對一題造成 40 點高額輸出！
+                    dealDamageToBosses(40);
+
                     if (option.type === "OCF") setAnimationState('projectile-ocf');
                     if (option.type === "ICF") setAnimationState('projectile-icf');
                     if (option.type === "FCF") setAnimationState('projectile-fcf');
 
                     setAnswerFeedback({
                         isCorrect: true,
-                        text: `✨ 魔法吟唱成功！【${option.label}】是正確分類！發射強力魔法彈攻擊對手！`,
+                        text: `✨ 魔法詠唱成功！【${option.label}】為正確分類！發射高階飛彈造成 40 點傷害！`,
                         explain: activeQuestion.explain
                     });
-
-                    setTimeout(() => {
-                        setAnimationState('');
-                    }, 1000);
-
                 } else {
-                    // Incorrect! Monster counter-attacks
-                    setPlayerHp(prev => Math.max(0, prev - 25));
+                    // 答錯扣玩家生命值 (扣 15)
+                    setPlayerHp(prev => Math.max(0, prev - 15));
                     setAnimationState('shake-and-flash');
 
-                    // Record wrong answer to let AI analyze later
                     setWrongAnswers(prev => [...prev, {
                         question: activeQuestion.text,
                         chosen: option.label,
@@ -318,87 +299,60 @@
 
                     setAnswerFeedback({
                         isCorrect: false,
-                        text: `💥 吟唱失敗！這不是【${option.label}】。遭到對手強力反擊！`,
+                        text: `💥 分類謬誤！這不是【${option.label}】。遭到怪獸反噬，護盾值受損！`,
                         explain: activeQuestion.explain
                     });
-
-                    setTimeout(() => {
-                        setAnimationState('');
-                    }, 1000);
                 }
+
+                setTimeout(() => {
+                    setAnimationState('');
+                }, 800);
             };
 
             const handleNext = () => {
-                // If player is dead, Game Over
-                if (playerHp <= 0) {
-                    setGameState('game_over');
-                    return;
-                }
-
-                const levelQuestions = QUESTIONS.filter(q => q.level === currentLevel);
                 const nextIdx = questionIndex + 1;
 
-                // Check if the enemy is fully defeated (HP = 0)
-                if (enemyHp <= 0) {
-                    if (currentLevel < 3) {
-                        setGameState('level_clear');
-                    } else {
-                        setGameState('game_over'); // Won the whole game
-                    }
+                // 若 10 題已做完，或是玩家血量歸零，則直接結算
+                if (nextIdx >= 10 || playerHp <= 0) {
+                    setGameState('game_over');
                 } else {
-                    // If we have run out of questions for this level but the enemy is STILL alive
-                    // (Meaning the player made mistakes and did not deal enough damage)
-                    if (nextIdx >= levelQuestions.length) {
-                        // Player fails to clear the level because monster did not die
-                        setGameState('game_over');
-                    } else {
-                        // Move to the next question in the current level
-                        setQuestionIndex(nextIdx);
-                        setActiveQuestion(levelQuestions[nextIdx]);
-                        setAnswerFeedback(null);
-                    }
+                    setQuestionIndex(nextIdx);
+                    setActiveQuestion(gameQuestions[nextIdx]);
+                    setAnswerFeedback(null);
                 }
             };
 
-            const enterNextLevel = () => {
-                initLevel(currentLevel + 1);
-                setGameState('playing');
-            };
-
-            // --- GEMINI API CALL FOR WRONG QUESTION ANALYSIS ---
+            // AI 特訓報告生成
             const askAiTutor = async () => {
                 setIsAiLoading(true);
-                setAiExplanation('正在連線傳喚會計學大師，為您批改考卷並傳授三大活動分類奧義...');
+                setAiExplanation('正在連線傳喚會計學大師，正在讀取第七組組員的錯題表現，進行高維度金流觀念特訓剖析...');
 
                 const wrongDetails = wrongAnswers.map((w, idx) => `
                 錯題 ${idx+1}：
-                問題："${w.question}"
-                您誤判為："${w.chosen}"
-                正確答案："${w.correct}"
+                會計情境："${w.question}"
+                玩家錯判："${w.chosen}"
+                正確解答："${w.correct}"
                 `).join('\n');
 
-                const systemPrompt = "你是一位熱情且會計理論極強的『大專會計魔法學院特聘教授』。請用繁體中文 (Traditional Chinese)，針對玩家在『現金流量表三大活動』分類挑戰中答錯的題目進行精闢且極易理解的「破題解析與觀念導正」。請教導玩家如何區分營運活動 (OCF)、投資活動 (ICF) 與籌資活動 (FCF) 的最核心邏輯（例如：營運看損益與流動資產負債、投資看非流動資產、籌資看非流動負債與權益）。字數控制在 250 字內，用活潑幽默且鼓勵性質的口吻撰寫。";
+                const systemPrompt = "你是一位幽默熱情、掌握頂尖會計學術理論的『大專會計魔法學院特聘教授』。請用繁體中文 (Traditional Chinese)，針對玩家在此局10題隨機戰中答錯的題型進行破題診斷。用最通俗易懂的語言點醒他們：日常營運（OCF）看損益及營運資金流動；非流動資產買賣（ICF）屬於長期投資；向金融機構借還款或向股東發股利（FCF）則是籌資。字數請精簡在 280 字內，並給予正面鼓勵。";
 
                 try {
                     const apiKey = ""; 
                     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            contents: [{ parts: [{ text: `玩家在挑戰賽中的錯題記錄如下：\n${wrongDetails || "無錯題，玩家全部答對！請給予大力的讚賞與後續學習建議。"}\n請為玩家進行觀念診斷與魔鬼訓練教學：` }] }],
+                            contents: [{ parts: [{ text: `第七組本次隨機抽題挑戰的錯題記錄如下：\n${wrongDetails || "全對無錯題，完美過關！請給予極高規格的褒獎！"}\n請大師進行特訓診斷：` }] }],
                             systemInstruction: { parts: [{ text: systemPrompt }] }
                         })
                     });
 
                     if (!response.ok) throw new Error();
-
                     const result = await response.json();
-                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "連線至魔法學院失敗，但會計大師留下了一句真傳密碼：『營運看損益，投資看長投，籌資看金主！』";
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "連線至學院伺服器失敗，但大師的心法仍在：『營運看收支，投資看長資，籌資看股利！』";
                     setAiExplanation(text);
                 } catch (error) {
-                    setAiExplanation("⚠️ 魔法電訊中斷。大師留言：『記住！營運活動 (OCF) 是日常進銷存；投資活動 (ICF) 是購置長期的不動產、廠房及設備；籌資活動 (FCF) 是跟銀行借還款或向股東融資與發股利。掌握此原則，即可輕鬆擊敗赤字怪獸！』");
+                    setAiExplanation("⚠️ 魔法波段受干擾。大師留言：『記住核心奧義：營運活動 (OCF) 是主要進銷存與流動損益項目；投資活動 (ICF) 是購置長期的機器設備或處分長投；籌資活動 (FCF) 是與銀行借還款或向股東融資與發股利。掌握這些，下次必然能無傷橫掃淨零大魔神！』");
                 } finally {
                     setIsAiLoading(false);
                 }
@@ -406,7 +360,7 @@
 
             return (
                 <div className="max-w-6xl mx-auto px-4 py-8">
-                    {/* Top Status Header */}
+                    {/* 團隊頂部抬頭 */}
                     <header className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-800 pb-4">
                         <div className="flex items-center gap-3">
                             <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg shadow-indigo-950/40">
@@ -414,9 +368,9 @@
                             </div>
                             <div>
                                 <h1 className="text-3xl font-extrabold text-white tracking-wide">
-                                    會計魔法戰 <span className="text-xs bg-indigo-700 text-indigo-100 py-1 px-3 rounded-full uppercase tracking-widest font-bold">現金流防禦戰</span>
+                                    會計魔法戰 
                                 </h1>
-                                <p className="text-sm text-gray-400">大專會計創意專案：精通營運 (OCF)、投資 (ICF) 與籌資 (FCF) 三大活動分類</p>
+                                <p className="text-sm text-gray-400">大專會計創意專案：溢出傷害連鎖殺陣，目標斬殺深淵之至高魔龍皇！</p>
                             </div>
                         </div>
                         <div className="mt-4 md:mt-0 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm flex items-center gap-2">
@@ -425,126 +379,116 @@
                         </div>
                     </header>
 
-                    {/* START SCREEN */}
+                    {/* 初始畫面 */}
                     {gameState === 'start' && (
                         <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12 shadow-2xl">
-                            <div className="w-20 h-20 bg-indigo-600/10 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-indigo-500/20">
+                            <div className="w-20 h-20 bg-red-600/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
                                 <Icons.Flame />
                             </div>
-                            <h2 className="text-2xl font-bold mb-3 text-white">召喚：會計魔法師！</h2>
+                            <h2 className="text-2xl font-bold mb-3 text-white">啟動：遠古三階魔王連續挑戰賽</h2>
                             <p className="text-sm text-gray-300 leading-relaxed mb-6 text-left">
-                                「高碳排赤字怪獸」正在侵蝕我們的校園手搖飲店財務。唯一的防禦武器，就是將突發的會計交易正確歸類到現金流量表深度三大核心活動：
+                                召喚會計魔法師！你將連續迎戰三個階段的中二深淵巨獸！
+                                每次答對能造成 <strong>40 點溢出傷害</strong>。10 題答完後，我們將結算你成功斬殺了哪幾隻巨獸、以及最後面對的 Boss 殘留血量！
                                 <br /><br />
-                                🔵 <strong>營運活動 (OCF)</strong>：所有跟日常賺錢與開銷相關的收支。
+                                👿 <strong>一階：幽冥虛空噬魂災厄兵</strong>（HP: 100）
                                 <br />
-                                🟢 <strong>投資活動 (ICF)</strong>：添購生產力設備或做長期投資。
+                                🪨 <strong>二階：破滅極星黃金泰坦神巨石</strong>（HP: 120）
                                 <br />
-                                🟡 <strong>籌資活動 (FCF)</strong>：跟銀行借還錢或給股東發放股利。
-                                <br /><br />
-                                答對即可發射強力會計導彈擊退怪獸，答錯則會遭受重大財務反噬！你有信心能完全擊退三大關卡的惡麻嗎？
+                                🐲 <strong>三階：至高神耀淨世創生魔龍皇</strong>（HP: 150）
                             </p>
                             <button
-                                onClick={startGame}
+                                onClick={startNewSession}
                                 className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-4 px-6 rounded-xl transition duration-150 text-lg flex items-center justify-center gap-2"
                             >
                                 <Icons.Shield />
-                                進入魔法試煉
+                                隨機抽取 10 題即刻迎戰
                             </button>
                         </div>
                     )}
 
-                    {/* BATTLEGROUND AREA */}
+                    {/* 戰鬥中介面 */}
                     {gameState === 'playing' && activeQuestion && (
                         <div className="space-y-6">
                             
-                            {/* Battle Animation Canvas */}
+                            {/* 戰鬥動畫展示區 */}
                             <div className={`bg-slate-950 border border-slate-800 rounded-2xl p-6 relative h-64 overflow-hidden transition-all duration-300 ${
                                 animationState === 'shake-and-flash' ? 'animate-flash-red animate-shake border-red-500/50' : ''
                             }`}>
                                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/20 to-transparent pointer-events-none"></div>
                                 
                                 <div className="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-950/40 px-3 py-1.5 rounded-full border border-indigo-900">
-                                    第 {currentLevel} 關關卡：{enemyName}
+                                    進度：第 {questionIndex + 1} / 10 題
                                 </div>
 
                                 <div className="absolute top-4 right-4 text-sm font-bold text-yellow-400">
-                                    得分：{score} pts
+                                    累計得分：{score} pts
                                 </div>
 
-                                {/* Active Combatants Row */}
                                 <div className="flex justify-between items-center h-full max-w-4xl mx-auto px-4">
-                                    
-                                    {/* Player (Wizard) */}
+                                    {/* 玩家 */}
                                     <div className="flex flex-col items-center relative animate-bounce-slow">
-                                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl shadow-xl shadow-indigo-950/50 border border-indigo-400">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-3xl shadow-xl border border-indigo-400">
                                             🧙‍♂️
                                         </div>
                                         <span className="text-xs font-bold mt-2 text-indigo-300">魔法會計師</span>
-                                        
-                                        {/* HP Bar */}
-                                        <div className="w-24 bg-slate-800 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-700">
+                                        <div className="w-24 bg-slate-800 h-2.5 rounded-full mt-1.5 overflow-hidden">
                                             <div className="bg-emerald-500 h-full transition-all duration-300" style={{ width: `${playerHp}%` }}></div>
                                         </div>
-                                        <span className="text-[10px] text-gray-500 mt-1">生命值：{playerHp}/100</span>
-
-                                        {/* Magic missile dynamic projectiles */}
-                                        {animationState === 'projectile-ocf' && (
-                                            <div className="absolute w-12 h-6 bg-blue-500 rounded-full blur-[2px] projectile-ocf-active flex items-center justify-center text-xs font-extrabold text-white">
-                                                OCF
-                                            </div>
-                                        )}
-                                        {animationState === 'projectile-icf' && (
-                                            <div className="absolute w-12 h-6 bg-emerald-500 rounded-full blur-[2px] projectile-icf-active flex items-center justify-center text-xs font-extrabold text-white">
-                                                ICF
-                                            </div>
-                                        )}
-                                        {animationState === 'projectile-fcf' && (
-                                            <div className="absolute w-12 h-6 bg-amber-500 rounded-full blur-[2px] projectile-fcf-active flex items-center justify-center text-xs font-extrabold text-white">
-                                                FCF
-                                            </div>
-                                        )}
                                     </div>
 
-                                    {/* CLASH IMPACT ZONE */}
+                                    {/* 飛彈彈道 */}
                                     <div className="flex items-center justify-center">
-                                        {animationState === 'shake-and-flash' && (
-                                            <span className="text-3xl animate-pulse">💥</span>
+                                        {animationState === 'projectile-ocf' && <div className="absolute w-12 h-6 bg-blue-500 rounded-full projectile-ocf-active flex items-center justify-center text-xs font-extrabold text-white">OCF</div>}
+                                        {animationState === 'projectile-icf' && <div className="absolute w-12 h-6 bg-emerald-500 rounded-full projectile-icf-active flex items-center justify-center text-xs font-extrabold text-white">ICF</div>}
+                                        {animationState === 'projectile-fcf' && <div className="absolute w-12 h-6 bg-amber-500 rounded-full projectile-fcf-active flex items-center justify-center text-xs font-extrabold text-white">FCF</div>}
+                                        {animationState === 'shake-and-flash' && <span className="text-3xl animate-pulse">💥</span>}
+                                    </div>
+
+                                    {/* 當前目標 Boss */}
+                                    <div className="flex flex-col items-center relative">
+                                        {currentMonsterIndex < BOSS_STAGES.length ? (
+                                            <>
+                                                <div className="w-20 h-20 bg-slate-900 border-2 border-red-500 rounded-2xl flex items-center justify-center text-4xl shadow-xl animate-bounce-slow">
+                                                    {BOSS_STAGES[currentMonsterIndex].avatar}
+                                                </div>
+                                                <span className="text-xs font-bold mt-2 text-red-300 truncate max-w-[150px]">
+                                                    {BOSS_STAGES[currentMonsterIndex].name}
+                                                </span>
+                                                <div className="w-28 bg-slate-800 h-2.5 rounded-full mt-1.5 overflow-hidden">
+                                                    <div 
+                                                        className="bg-red-500 h-full transition-all duration-300" 
+                                                        style={{ width: `${(currentMonsterHp / BOSS_STAGES[currentMonsterIndex].maxHp) * 100}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span className="text-[10px] text-gray-500 mt-1">
+                                                    HP: {currentMonsterHp} / {BOSS_STAGES[currentMonsterIndex].maxHp}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="text-5xl animate-bounce">👑</div>
+                                                <span className="text-xs font-bold text-yellow-400 block mt-2">深淵霸主全數被消滅！</span>
+                                            </div>
                                         )}
                                     </div>
-
-                                    {/* Enemy (Monster) */}
-                                    <div className="flex flex-col items-center relative">
-                                        <div className="w-20 h-20 bg-slate-900 border-2 border-rose-500 rounded-2xl flex items-center justify-center text-4xl shadow-xl shadow-rose-950/40 animate-bounce-slow">
-                                            {currentLevel === 1 ? '👹' : currentLevel === 2 ? '🪨' : '🐲'}
-                                        </div>
-                                        <span className="text-xs font-bold mt-2 text-rose-300">{enemyName}</span>
-
-                                        {/* Enemy HP Bar */}
-                                        <div className="w-28 bg-slate-800 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-700">
-                                            <div className="bg-rose-500 h-full transition-all duration-300" style={{ width: `${(enemyHp / enemyMaxHp) * 100}%` }}></div>
-                                        </div>
-                                        <span className="text-[10px] text-gray-500 mt-1">生命值：{enemyHp}/{enemyMaxHp}</span>
-                                    </div>
-
                                 </div>
                             </div>
 
-                            {/* Question Card Display */}
+                            {/* 題目面板 */}
                             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
                                 <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
                                     <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
                                         <Icons.HelpCircle />
-                                        會計交易事件
+                                        隨機交易事件
                                     </span>
-                                    <span className="text-xs text-gray-500">當前關卡題量：{questionIndex + 1} / 3</span>
+                                    <span className="text-xs text-gray-400">已擊破魔王：{defeatedMonsters.length} / 3</span>
                                 </div>
                                 <h3 className="text-lg md:text-xl font-bold text-white leading-relaxed mb-6">
                                     「{activeQuestion.text}」
                                 </h3>
 
-                                {/* Answer Selections */}
                                 {!answerFeedback ? (
-                                    <div className="grid className inline-grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         {activeQuestion.options.map((opt, i) => (
                                             <button
                                                 key={i}
@@ -571,23 +515,17 @@
                                         <div className={`p-5 rounded-xl border ${
                                             answerFeedback.isCorrect ? 'bg-emerald-950/20 border-emerald-900 text-emerald-200' : 'bg-rose-950/20 border-rose-900 text-rose-200'
                                         }`}>
-                                            <h4 className="font-bold mb-2 text-md flex items-center gap-1.5">
-                                                {answerFeedback.isCorrect ? (
-                                                    <><Icons.CheckCircle /> <span className="ml-1">{answerFeedback.text}</span></>
-                                                ) : (
-                                                    <><Icons.AlertTriangle /> <span className="ml-1">{answerFeedback.text}</span></>
-                                                )}
+                                            <h4 className="font-bold mb-1 flex items-center gap-1.5">
+                                                {answerFeedback.isCorrect ? <Icons.CheckCircle /> : <Icons.AlertTriangle />}
+                                                <span className="ml-1">{answerFeedback.text}</span>
                                             </h4>
-                                            <p className="text-xs text-gray-400 leading-relaxed mt-3">
-                                                <strong>💡 會計解析：</strong> {answerFeedback.explain}
-                                            </p>
+                                            <p className="text-xs text-gray-400 mt-2"><strong>💡 答案理論解析：</strong> {answerFeedback.explain}</p>
                                         </div>
-
                                         <button
                                             onClick={handleNext}
                                             className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl transition duration-150 flex items-center justify-center gap-1"
                                         >
-                                            繼續前行 / 進入下一回合
+                                            下一個事件卡
                                             <Icons.ArrowRight />
                                         </button>
                                     </div>
@@ -596,90 +534,105 @@
                         </div>
                     )}
 
-                    {/* LEVEL CLEAR TRANSITION SCREEN */}
-                    {gameState === 'level_clear' && (
-                        <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center my-12 shadow-2xl">
-                            <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
-                                <Icons.ShieldCheck />
-                            </div>
-                            <h2 className="text-2xl font-bold mb-2 text-white">第 {currentLevel} 關防禦成功！</h2>
-                            <p className="text-sm text-gray-400 mb-6">
-                                幹得好！你成功利用優異的會計分類，全數擊退了【{enemyName}】。
-                                接下來的關卡，赤字怪獸將會更加難纏，會計交易分錄也將引入更複雜的「折舊攤銷」、「應計變動項目」！
-                            </p>
-                            <button
-                                onClick={enterNextLevel}
-                                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-6 rounded-xl transition duration-150 flex justify-center items-center gap-2"
-                            >
-                                <Icons.Sword />
-                                挺進第 {currentLevel + 1} 關卡
-                            </button>
-                        </div>
-                    )}
-
-                    {/* GAME OVER AND RESULT COMPILATION */}
+                    {/* 遊戲結算畫面 */}
                     {gameState === 'game_over' && (
                         <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-                            <div className="text-center mb-8">
-                                <div className="w-20 h-20 bg-indigo-600/10 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-500/30">
-                                    <Icons.Trophy />
+                            <div className="text-center mb-6">
+                                <div className="w-24 h-24 bg-gradient-to-br from-yellow-500/10 to-indigo-500/10 border border-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl">
+                                    {currentMonsterIndex >= BOSS_STAGES.length ? "🏆" : BOSS_STAGES[currentMonsterIndex].avatar}
                                 </div>
-                                <h2 className="text-3xl font-extrabold text-white">會計魔法試煉總結</h2>
-                                <p className="text-gray-400 mt-1">
-                                    {playerHp > 0 && enemyHp <= 0 ? '🏆 恭喜！您已成功擊退所有赤字巨獸，榮登「永續金流大師」寶座！' : '💀 挑戰失敗！未能成功擊潰怪獸，店鋪面臨流動性危機！'}
-                                </p>
+                                <h2 className="text-3xl font-extrabold text-white">第七組財務魔法戰鬥報告</h2>
+                                <p className="text-sm text-gray-400 mt-1">10 題隨機實力考核完畢，以下為您目前的防禦進度：</p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center">
-                                    <span className="text-xs text-gray-500 uppercase font-bold block">最終魔法積分</span>
-                                    <span className="text-4xl font-extrabold text-indigo-400 mt-2 inline-block">{score} pts</span>
+                            {/* 戰況盤點面板 */}
+                            <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 text-center space-y-4">
+                                <div>
+                                    <span className="text-xs text-gray-500 font-bold uppercase block">當前面對 / 終結狀態</span>
+                                    {currentMonsterIndex >= BOSS_STAGES.length ? (
+                                        <div className="mt-2">
+                                            <span className="text-xl font-black text-emerald-400">👑 神話永續級：完全擊殺！</span>
+                                            <p className="text-xs text-gray-400 mt-2 leading-relaxed px-4">
+                                                次元主宰！10題中你近乎全對（錯 0~1 題），總輸出高達 360 點以上，成功將實力深不可測的【魔龍皇】徹底降伏，完美守護了手搖飲店的淨零金流！
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2">
+                                            <span className="text-xl font-black text-yellow-400">
+                                                正在與 {BOSS_STAGES[currentMonsterIndex].name} 激烈鏖戰！
+                                            </span>
+                                            <p className="text-sm font-bold text-gray-300 mt-1">
+                                                該 Boss 殘餘血量：<span className="text-red-400">{currentMonsterHp}</span> / {BOSS_STAGES[currentMonsterIndex].maxHp}
+                                            </p>
+                                            <p className="text-xs text-gray-400 mt-3 leading-relaxed px-4">
+                                                {currentMonsterIndex === 2 && "錯 2 到 4 題。表現極為優異！你輕鬆橫掃了小魔兵與神巨石，順利攻克至最深淵的第三關，正與【至高神耀魔龍皇】展開最後的終焉對決！"}
+                                                {currentMonsterIndex === 1 && "錯 5 到 7 題。稍顯吃力！你成功斬殺了第一關的魔物，目前被第二關的【泰坦神巨石】使用超重力屏障死死壓制！"}
+                                                {currentMonsterIndex === 0 && "錯 8 題以上。警告！你的魔法詠唱不夠精準，目前仍被阻擋在最弱的【幽冥虛空小魔兵】面前，手搖飲店將陷入不可逆的流動性赤字黑洞！"}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center">
-                                    <span className="text-xs text-gray-500 uppercase font-bold block">錯題失誤數</span>
-                                    <span className="text-4xl font-extrabold text-rose-400 mt-2 inline-block">{wrongAnswers.length} 題</span>
+
+                                <div className="border-t border-slate-800 pt-4 text-left">
+                                    <span className="text-xs text-gray-500 font-bold block mb-2">已成功斬殺的 Boss 清單：</span>
+                                    {defeatedMonsters.length > 0 ? (
+                                        <div className="flex flex-wrap gap-2">
+                                            {defeatedMonsters.map((name, i) => (
+                                                <span key={i} className="text-xs font-bold bg-red-950/40 border border-red-900/60 text-red-400 py-1 px-3 rounded-full">
+                                                    🪓 已斬殺：{name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <span className="text-xs text-gray-500 italic">無（尚未成功討伐任何 Boss）</span>
+                                    )}
                                 </div>
                             </div>
 
-                            {/* AI Magic Accounting Tutor Room */}
-                            <div className="bg-gradient-to-r from-indigo-950/50 to-slate-950 border border-indigo-900 rounded-2xl p-6 shadow-xl mb-6">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-md font-bold text-indigo-300 flex items-center gap-2">
-                                        <Icons.Sparkles />
-                                        <span className="ml-1">Gemini AI 魔法導師 - 分類奧義特訓診斷</span>
+                            {/* 分數與失誤 */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                                    <span className="text-xs text-gray-500 font-bold block">答對題數 (正確率)</span>
+                                    <span className="text-2xl font-black text-emerald-400 mt-1 inline-block">{correctCount} / 10 題</span>
+                                </div>
+                                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                                    <span className="text-xs text-gray-500 font-bold block">最終魔法積分</span>
+                                    <span className="text-2xl font-black text-indigo-400 mt-1 inline-block">{score} pts</span>
+                                </div>
+                            </div>
+
+                            {/* AI 特訓導師 */}
+                            <div className="bg-gradient-to-r from-indigo-950/40 to-slate-950 border border-indigo-900 rounded-2xl p-5 shadow-xl mb-6">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="text-sm font-bold text-indigo-300 flex items-center gap-1">
+                                        <Icons.Sparkles /> <span>Gemini AI 導師之第七組戰功評估</span>
                                     </h3>
                                     <button
                                         onClick={askAiTutor}
                                         disabled={isAiLoading}
-                                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg flex items-center gap-1.5 transition duration-150"
+                                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 transition duration-150"
                                     >
-                                        {isAiLoading ? (
-                                            <span className="animate-spin inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full mr-1"></span>
-                                        ) : (
-                                            <Icons.BookOpen />
-                                        )}
-                                        <span className="ml-1">大師觀念診斷</span>
+                                        {isAiLoading ? <span className="animate-spin inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full mr-1"></span> : <Icons.BookOpen />}
+                                        <span>大師觀念診斷</span>
                                     </button>
                                 </div>
-                                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 text-sm min-h-[100px]">
+                                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs min-h-[90px]">
                                     {aiExplanation ? (
-                                        <p className="text-indigo-100 leading-relaxed font-mono whitespace-pre-line">{aiExplanation}</p>
+                                        <p className="text-indigo-200 leading-relaxed whitespace-pre-line font-mono">{aiExplanation}</p>
                                     ) : (
-                                        <p className="text-gray-500 italic text-center py-4">
-                                            {wrongAnswers.length > 0 
-                                                ? "「點擊上方大師診斷，AI 導師將精確讀取您在遊戲中答錯的題目，為您量身打造觀念解鎖對策！」"
-                                                : "「您太棒了！無失誤通關，點擊上方可獲取大師對您的永續經營祝福語與高級會計展望！」"}
+                                        <p className="text-gray-500 italic text-center py-2">
+                                            {wrongAnswers.length > 0 ? "「點擊大師診斷，AI 會立刻調閱第七組本次錯題，精準傳授應對巨獸的會計核心心法！」" : "「太完美了！無失誤通關，點擊大師診斷，聆聽大師對第七組的最高讚賞！」"}
                                         </p>
                                     )}
                                 </div>
                             </div>
 
                             <button
-                                onClick={startGame}
-                                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl transition duration-150 flex justify-center items-center gap-2"
+                                onClick={startNewSession}
+                                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl transition duration-150 flex justify-center items-center gap-1"
                             >
                                 <Icons.RotateCcw />
-                                <span className="ml-1">重啟修煉 (再次挑戰)</span>
+                                <span>重啟新挑戰（再次隨機抽 10 題）</span>
                             </button>
                         </div>
                     )}
@@ -687,10 +640,9 @@
             );
         }
 
-        // Render React Application
         const rootElement = document.getElementById('root');
         const root = ReactDOM.createRoot(rootElement);
         root.render(<App />);
     </script>
 </body>
-</html>               
+</html>
